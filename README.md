@@ -1,2 +1,2 @@
-# SIMD_bit_compression
+# SIMD_data_interleave
  
