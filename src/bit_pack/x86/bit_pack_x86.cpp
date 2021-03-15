@@ -28,8 +28,7 @@
 void bit_pack_x86(
               int8_t* __restrict dst,
         const int8_t* __restrict src,
-        const int32_t length,
-        const int32_t frames)
+        const int32_t length)
 {
 
 }

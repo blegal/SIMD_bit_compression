@@ -30,8 +30,7 @@
 void bit_unpack_avx2(
               __m256i* dst,
         const __m256i* src,
-        const int32_t length,
-        const int32_t frames)
+        const int32_t length)
 {
 
 }
