@@ -26,8 +26,8 @@
 #include "bit_pack_x86.hpp"
 
 void bit_pack_x86(
-              int8_t* __restrict dst,
-        const int8_t* __restrict src,
+              uint8_t* __restrict dst,
+        const uint8_t* __restrict src,
         const int32_t length)
 {
 

@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-extern void bit_unpack_x86(int8_t* dst, const int8_t* src, const int32_t length);
+extern void bit_unpack_x86(uint8_t* dst, const uint8_t* src, const int32_t length);
 
 #endif
     

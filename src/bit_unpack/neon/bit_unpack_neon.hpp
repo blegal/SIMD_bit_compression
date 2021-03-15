@@ -32,7 +32,7 @@
 #include <stdint.h>
 #include <immintrin.h>
 
-extern void bit_unpack_neon(int8_t* dst, const int8_t* src, const int32_t length);
+extern void bit_unpack_neon(uint8_t* dst, const uint8_t* src, const int32_t length);
 
 #endif //__SSE4_2__
 #endif

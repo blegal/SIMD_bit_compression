@@ -37,7 +37,7 @@
     #include "NEON_2_SSE.h"
 #endif
 
-extern void bit_pack_neon(int8x16_t* dst, const int8x16_t* src, const int32_t length);
+extern void bit_pack_neon(uint8_t* dst, const uint8_t* src, const int32_t length);
 
 #endif
 

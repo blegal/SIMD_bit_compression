@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-extern void bit_pack_x86(int8_t* __restrict dst, const int8_t* __restrict src, const int32_t length);
+extern void bit_pack_x86(uint8_t* __restrict dst, const uint8_t* __restrict src, const int32_t length);
 
 #endif
     

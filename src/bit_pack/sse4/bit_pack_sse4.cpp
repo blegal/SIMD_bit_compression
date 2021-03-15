@@ -26,7 +26,15 @@
 #ifdef __SSE4_2__
 #include "bit_pack_sse4.hpp"
 
-void bit_pack_sse4(__m128i* dst, const __m128i* src, const int32_t length)
+inline void compress_and_store_msg(int32_t* _ptr_, const __m128i x, const __m128i v1, const __m128i v2) {
+    int16_t* ptr = (int16_t*)_ptr_;
+    const auto r = _mm_cmpeq_epi8(x, v1);
+    const auto s = _mm_cmpeq_epi8(x, v2);
+    ptr[0] = _mm_movemask_epi8( r );
+    ptr[1] = _mm_movemask_epi8( s );
+}
+
+void bit_pack_sse4(uint8_t* dst, const uint8_t* src, const int32_t length)
 {
 
 }

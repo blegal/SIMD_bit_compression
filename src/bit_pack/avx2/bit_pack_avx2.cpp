@@ -27,7 +27,20 @@
 #ifdef __AVX2__
 #include "bit_pack_avx2.hpp"
 
-void bit_pack_avx2(__m256i* dst, const __m256i* src, const int32_t length)
+inline void compress_and_store_vn(int32_t* ptr, const __m256i x) {
+    const auto r = _mm256_movemask_epi8(x);
+    (*ptr) = r;
+}
+
+inline void compress_and_store_msg(__mmask64* _ptr_, const __m256i x, const __m256i v1, const __m256i v2) {
+    int32_t* ptr = (int32_t*)_ptr_;
+    const auto r = _mm256_cmpeq_epi8(x, v1);
+    const auto s = _mm256_cmpeq_epi8(x, v2);
+    ptr[0] = _mm256_movemask_epi8( r );
+    ptr[1] = _mm256_movemask_epi8( s );
+}
+
+void bit_pack_avx2(uint8_t* dst, const uint8_t* src, const int32_t length)
 {
 
 }

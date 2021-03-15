@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-extern void bit_pack_avx512_avx512(__m512i* dst, const __m512i* src, const int32_t length);
+extern void bit_pack_avx512_avx512(uint8_t* dst, const uint8_t* src, const int32_t length);
 
 #endif //__AVX512F__
 #endif

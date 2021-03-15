@@ -178,20 +178,20 @@ int main(int argc, char* argv[])
     for(uint32_t ll = v_begin; ll <= v_end; ll += v_step)
     {
         printf("+> testing functions [ll = %4d]\n", ll);
-        int8_t* i_tab  = new int8_t[ll];
-        int8_t* o_x86  = new int8_t[ll];
-        int8_t* d_x86  = new int8_t[ll];
+        uint8_t* i_tab  = new uint8_t[ll];
+        uint8_t* o_x86  = new uint8_t[ll];
+        uint8_t* d_x86  = new uint8_t[ll];
 #ifdef __SSE4_2__
-        int8_t* o_sse  = new int8_t[ll];
-        int8_t* d_sse  = new int8_t[ll];
+        uint8_t* o_sse  = new uint8_t[ll];
+        uint8_t* d_sse  = new uint8_t[ll];
 #endif
 #ifdef __AVX2__
-        int8_t* o_avx  = new int8_t[ll];
-        int8_t* d_avx  = new int8_t[ll];
+        uint8_t* o_avx  = new uint8_t[ll];
+        uint8_t* d_avx  = new uint8_t[ll];
 #endif
 #ifdef __ARM_NEON__
-        int8_t* o_neon = new int8_t[ll];
-        int8_t* d_neon = new int8_t[ll];
+        uint8_t* o_neon = new uint8_t[ll];
+        uint8_t* d_neon = new uint8_t[ll];
 #endif
         
         for (uint32_t i = 0; i < ll; i += 1) {
@@ -268,12 +268,12 @@ int main(int argc, char* argv[])
 #ifdef __SSE4_2__
             auto start_i_sse4 = std::chrono::system_clock::now();
             for(int32_t loop = 0; loop < nTest; loop += 1)
-                bit_pack_sse4((__m128i*)o_sse, (__m128i*)i_tab, ll);
+                bit_pack_sse4(o_sse, i_tab, ll);
             auto stop_i_sse4 = std::chrono::system_clock::now();
 
             auto start_d_sse4 = std::chrono::system_clock::now();
             for(int32_t loop = 0; loop < nTest; loop += 1)
-                bit_unpack_sse4((__m128i*)d_sse, (__m128i*)o_sse, ll);
+                bit_unpack_sse4(d_sse, o_sse, ll);
             auto stop_d_sse4 = std::chrono::system_clock::now();
 #endif
 
@@ -284,12 +284,12 @@ int main(int argc, char* argv[])
 #ifdef __AVX2__
             auto start_i_avx2 = std::chrono::system_clock::now();
             for(int32_t loop = 0; loop < nTest; loop += 1)
-                bit_pack_avx2((__m256i*)o_avx, (__m256i*)i_tab, ll);
+                bit_pack_avx2(o_avx, i_tab, ll);
             auto stop_i_avx2 = std::chrono::system_clock::now();
 
             auto start_d_avx2 = std::chrono::system_clock::now();
             for(int32_t loop = 0; loop < nTest; loop += 1)
-                bit_unpack_avx2((__m256i*)d_avx, (__m256i*)o_avx, ll);
+                bit_unpack_avx2(d_avx, o_avx, ll);
             auto stop_d_avx2 = std::chrono::system_clock::now();
 #endif
 
@@ -300,7 +300,7 @@ int main(int argc, char* argv[])
 #ifdef __ARM_NEON__
             auto start_i_neon = std::chrono::system_clock::now();
             for(int32_t loop = 0; loop < nTest; loop += 1)
-                bit_pack_neon((int8x16_t*)o_neon, (int8x16_t*)i_tab, ll);
+                bit_pack_neon(o_neon, i_tab, ll);
             auto stop_i_neon = std::chrono::system_clock::now();
 
             auto start_d_neon = std::chrono::system_clock::now();

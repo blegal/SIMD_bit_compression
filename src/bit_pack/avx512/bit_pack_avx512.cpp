@@ -26,7 +26,23 @@
 #include "bit_pack_avx512.hpp"
 #ifdef __AVX512F__
 
-void bit_pack_avx512(__m512i* dst, const __m512i* src, const int32_t length)
+template < > inline void compress_and_store_vn(__mmask64* ptr, const __m512i x) {
+    const auto r = _mm512_movepi8_mask(x);
+    (*ptr) = r;
+}
+template < > inline void compress_and_store_vn(__m512i* ptr, const __m512i x) {
+    _mm512_store_si512(ptr, x);
+}
+template < > inline void compress_and_store_msg(__m128i* _ptr_, const __m512i x, const __m512i v1, const __m512i v2) {
+    __mmask64* ptr = (__mmask64*)_ptr_;
+    ptr[0] = _mm512_cmpeq_epi8_mask(x, v1);
+    ptr[1] = _mm512_cmpeq_epi8_mask(x, v2);
+}
+template < > inline void compress_and_store_msg(__m512i* ptr, const __m512i x, const __m512i v1, const __m512i v2) {
+    _mm512_store_si512(ptr, x);
+}
+
+void bit_pack_avx512(uint8_t* dst, const uint8_t* src, const int32_t length)
 {
 
 }

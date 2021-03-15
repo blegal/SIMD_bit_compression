@@ -27,7 +27,7 @@
 
 #include "bit_unpack_neon.hpp"
 
-void bit_unpack_neon(int8_t* dst, const int8_t* src, const int32_t length)
+void bit_unpack_neon(uint8_t* dst, const uint8_t* src, const int32_t length)
 {
 
 }

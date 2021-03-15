@@ -25,7 +25,7 @@
 
 #include "bit_unpack_x86.hpp"
 
-void bit_unpack_x86(int8_t* dst, const int8_t* src, const int32_t length)
+void bit_unpack_x86(uint8_t* dst, const uint8_t* src, const int32_t length)
 {
 
 }
