@@ -89,117 +89,11 @@ int main(int argc, char* argv[])
     printf("(II) Code compiled with UNKWON compiler\n");
 #endif
 
-#if 0
-    __m128i zero = _mm_setzero_si128();
-    __m128i one0 = _mm_setr_epi8(  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15);
-    __m128i one1 = _mm_setr_epi8( 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31);
-    __m128i one2 = _mm_setr_epi8( 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47);
-    __m128i one3 = _mm_setr_epi8( 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63);
-
-    printf("one0 = "); uint8_t_show(one0);
-    printf("one1 = "); uint8_t_show(one1);
-    printf("one2 = "); uint8_t_show(one2);
-    printf("one3 = "); uint8_t_show(one3);
-
-    const __m128i two0   = _mm_unpacklo_epi8(one0, one1);
-    const __m128i two1   = _mm_unpackhi_epi8(one0, one1);
-    const __m128i two2   = _mm_unpacklo_epi8(one2, one3);
-    const __m128i two3   = _mm_unpackhi_epi8(one2, one3);
-
-    printf("\n");
-    printf("two0 = "); uint8_t_show(two0);
-    printf("two1 = "); uint8_t_show(two1);
-    printf("two2 = "); uint8_t_show(two2);
-    printf("two3 = "); uint8_t_show(two3);
-
-    const __m128i t_0_1 = _mm_unpacklo_epi8( two0,  two1);
-    const __m128i t_0_2 = _mm_unpackhi_epi8( two0,  two1);
-    const __m128i t_0_3 = _mm_unpacklo_epi8( two2,  two3);
-    const __m128i t_0_4 = _mm_unpackhi_epi8( two2,  two3);
-
-    printf("\n");
-    printf("t_0_1 = "); uint8_t_show(t_0_1);
-    printf("t_0_2 = "); uint8_t_show(t_0_2);
-    printf("t_0_3 = "); uint8_t_show(t_0_3);
-    printf("t_0_4 = "); uint8_t_show(t_0_4);
-
-    const __m128i t_1_1 = _mm_unpacklo_epi8(t_0_1, t_0_3);
-    const __m128i t_1_2 = _mm_unpackhi_epi8(t_0_1, t_0_3);
-    const __m128i t_1_3 = _mm_unpacklo_epi8(t_0_2, t_0_4);
-    const __m128i t_1_4 = _mm_unpackhi_epi8(t_0_2, t_0_4);
-
-    printf("\n");
-    printf("t_1_1 = "); uint8_t_show(t_1_1);
-    printf("t_1_2 = "); uint8_t_show(t_1_2);
-    printf("t_1_3 = "); uint8_t_show(t_1_3);
-    printf("t_1_4 = "); uint8_t_show(t_1_4);
-
-    const __m128i t_2_1 = _mm_unpacklo_epi8(t_1_1, t_1_3);
-    const __m128i t_2_2 = _mm_unpackhi_epi8(t_1_1, t_1_3);
-    const __m128i t_2_3 = _mm_unpacklo_epi8(t_1_2, t_1_4);
-    const __m128i t_2_4 = _mm_unpackhi_epi8(t_1_2, t_1_4);
-
-    __m128i move = _mm_setr_epi8(15, 14, 11, 10, 7, 6, 3, 2, 13, 12, 9, 8, 5, 4, 1, 0);
-//    __m128i _mm_shuffle_epi8 (__m128i a, __m128i b)
-
-    printf("\n");
-    printf("t_2_1 = "); uint8_t_show(t_2_1);
-    printf("t_2_2 = "); uint8_t_show(t_2_2);
-    printf("t_2_3 = "); uint8_t_show(t_2_3);
-    printf("t_2_4 = "); uint8_t_show(t_2_4);
-
-    const __m128i t_3_1 = _mm_shuffle_epi8(t_2_1, move);
-    const __m128i t_3_2 = _mm_shuffle_epi8(t_2_2, move);
-    const __m128i t_3_3 = _mm_shuffle_epi8(t_2_3, move);
-    const __m128i t_3_4 = _mm_shuffle_epi8(t_2_4, move);
-
-    printf("\n");
-    printf("t_3_1 = "); uint8_t_show(t_3_1);
-    printf("t_3_2 = "); uint8_t_show(t_3_2);
-    printf("t_3_3 = "); uint8_t_show(t_3_3);
-    printf("t_3_4 = "); uint8_t_show(t_3_4);
-    exit( EXIT_SUCCESS );
-#endif
-
-#if 0
-    const int32_t N = 512;
-    uint8_t din[N], dtm[N], dou[N];
-    for(int32_t i = 0; i < N; i += 1)
-    {
-        din[i] = i;
-        dtm[i] = 0;
-        dou[i] = 0;
-    }
-
-    uint8_t_show( din, N );
-    printf("\n");
-       bit_pack_avx2((__m256i*) dtm, (const __m256i*) din, N/16);
-    bit_unpack_avx2((__m256i*) dou, (const __m256i*) dtm, N/16);
-//    deinterleave_x86_frames((int8_t*)dou, (const int8_t*)din, N/4, 4);
-    uint8_t_show( dtm, N );
-    printf("\n");
-    uint8_t_show( dou, N );
-    printf("\n");
-
-//    const __m128i four0 = _mm_unpacklo_epi16(three0, three2);
-//    const __m128i four1 = _mm_unpackhi_epi16(three0, three2);
-//    const __m128i four2 = _mm_unpacklo_epi16(three1, three3);
-//    const __m128i four3 = _mm_unpackhi_epi16(three1, three3);
-
-//    printf("\n");
-//    printf("src1 = "); uint8_t_show(four0);
-//    printf("src2 = "); uint8_t_show(four1);
-//    printf("src3 = "); uint8_t_show(four2);
-//    printf("src4 = "); uint8_t_show(four3);
-
-    exit( EXIT_SUCCESS );
-#endif
-
     const uint32_t v_begin = 128;//128;
     const uint32_t v_end   = 65536;//65536;
     const uint32_t v_step  = 2;
 
-    const  int32_t nTest   = (v_begin == v_end) ? 1024 * 1024 : 1024;
+    const  int32_t nTest   = (v_begin == v_end) ? (1024 * 1024) : (64 * 1024 * 1024);
 
     for(uint32_t ll = v_begin; ll <= v_end; ll *= v_step)
     {
