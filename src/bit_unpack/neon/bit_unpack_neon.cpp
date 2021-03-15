@@ -27,9 +27,34 @@
 
 #include "bit_unpack_neon.hpp"
 
+uint32_t m_values[16] = {
+        0x00000000, 0x00000001, 0x00000100, 0x00000101,
+        0x00010000, 0x00010001, 0x00010100, 0x00010101,
+        0x01000000, 0x01000001, 0x01000100, 0x01000101,
+        0x01010000, 0x01010001, 0x01010100, 0x01010101
+};
+
 void bit_unpack_neon(uint8_t* dst, const uint8_t* src, const int32_t length)
 {
+    if( length%8 != 0 )
+    {
+        printf("(EE) The array length that have (length%%8 != 0) are not currently managed !");
+        exit( EXIT_FAILURE );
+    }
 
+    const int32_t rounds = (length / sizeof(uint64_t));  // 64 bits car on fait 2 traitements 32 bits par iteration
+//  const int32_t middle = sizeof(__m128i) * rounds;
+
+    const uint8_t* ptr_i = (const uint8_t*)src;
+    uint32_t*  ptr_o = (uint32_t*)dst;
+
+#pragma loop unroll
+    for(int32_t i = 0; i < rounds; i += 1)
+    {
+        const uint32_t a = ptr_i[i];
+        (*ptr_o++) = m_values[ (a     ) & 0x0F ];
+        (*ptr_o++) = m_values[ (a >> 4) & 0x0F ];
+    }
 }
 
 #endif //__SSE4_2__

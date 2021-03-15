@@ -27,7 +27,22 @@
 
 void bit_unpack_x86(uint8_t* dst, const uint8_t* src, const int32_t length)
 {
+    if( length%8 != 0 )
+    {
+        printf("(EE) The array length that have (length%%8 != 0) are not currently managed !");
+        exit( EXIT_FAILURE );
+    }
 
+    const int32_t nBytes = length / 8;
+    for(int32_t i = 0; i < nBytes; i += 1)
+    {
+        const uint32_t v = src[i];
+#pragma clang loop unroll(full)
+        for( uint32_t q = 0; q < 8 ; q += 1 )
+        {
+            (*dst++) = (v >> q) & 0x01;
+        }
+    }
 }
 
 

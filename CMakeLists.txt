@@ -4,8 +4,8 @@ project(bit_compressor)
 
 SET(CMAKE_BUILD_TYPE Release)
 
-SET (CMAKE_C_COMPILER   /usr/local/opt/gcc@10/bin/gcc-10)
-SET (CMAKE_CXX_COMPILER /usr/local/opt/gcc@10/bin/g++-10)
+#SET (CMAKE_C_COMPILER   /usr/local/opt/gcc@10/bin/gcc-10)
+#SET (CMAKE_CXX_COMPILER /usr/local/opt/gcc@10/bin/g++-10)
 
 SET (CMAKE_CXX_STANDARD 17)
 

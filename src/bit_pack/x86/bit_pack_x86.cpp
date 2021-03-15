@@ -30,5 +30,24 @@ void bit_pack_x86(
         const uint8_t* __restrict src,
         const int32_t length)
 {
+    if( length%8 != 0 )
+    {
+        printf("(EE) The array length that have (length%%8 != 0) are not currently managed !");
+        exit( EXIT_FAILURE );
+    }
 
+    const uint8_t* ptr = src;
+    const int32_t ll = length / 8;
+
+    for(int32_t i = 0; i < ll; i += 1)
+    {
+        uint8_t v = (*ptr++);
+#pragma clang loop unroll(full)
+        for( uint32_t q = 1; q < 8 ; q += 1 )
+        {
+            v = v | ((*ptr) << q);
+            ptr += 1;
+        }
+        dst[i] = v;
+    }
 }

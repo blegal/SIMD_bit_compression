@@ -55,76 +55,55 @@ static const uint8_t one_array[64] = {
         0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
         0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01
 };
-static const uint8_t mone_array[64] = {
-        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
-};
 
-inline __m256i load_and_uncompress_vn(const int32_t* x) {
-#ifndef __AVX512F__
-    const auto mask2 = _mm256_loadu_si256( (__m256i*)mask2a    );
-    const auto mask1 = _mm256_loadu_si256( (__m256i*)mask1a    );
-    const auto ones  = _mm256_loadu_si256( (__m256i*)one_array );
-    const auto y = _mm256_set1_epi32( *x );
-    const auto z = _mm256_shuffle_epi8(y, mask1);
-    const auto u = _mm256_and_si256   (z, mask2);
-    const auto v = _mm256_cmpeq_epi8  (u, _mm256_setzero_si256());
-    const auto w = _mm256_xor_si256   (v, _mm256_cmpeq_epi8(v,v));
-    const auto b = _mm256_and_si256   (v, ones );                 // On laisse passer les 1
-    const auto p = _mm256_or_si256    (w,    b );
-    return p;   // ON RESSORT LA VALEUR -1 => +1
-#else
-    const auto zero  = _mm256_setzero_si256( );
-    const auto pone  = _mm256_loadu_si256  ( (__m256i*)one_array );
-    const auto mone  = _mm256_cmpeq_epi8   ( zero, zero);
-    const auto p     = _mm256_mask_mov_epi8( pone, *x, mone );
-    return p;   // ON RESSORT LA VALEUR -1 => +1
-#endif
-}
-//__m512i _mm512_mask_mov_epi8    (__m512i src, __mmask64 k, __m512i a)
-//__m512i _mm512_maskz_mov_epi8   (__mmask64 k, __m512i a)
-//__m512i _mm512_maskz_mov_epi8   (__mmask64 k, __m512i a)
-//__m512i _mm512_maskz_loadu_epi8 (__mmask64 k, void const* mem_addr)
-
-inline __m256i load_and_uncompress_vn(const __m256i* ptr) {
-    const auto p = _mm256_loadu_si256( (__m256i*)ptr );
-    return p;
-}
-
-inline __m256i load_and_uncompress_msg(const __mmask64* _ptr_, const __m256i c1, const __m256i c2) {
-    const int32_t* ptr = (int32_t*)_ptr_;
-#ifndef __AVX512F__
-    const auto mask2 = _mm256_loadu_si256( (__m256i*)mask2a );
-    const auto mask1 = _mm256_loadu_si256( (__m256i*)mask1a );
-    const auto y1    = _mm256_set1_epi32( ptr[0] );
-    const auto y2    = _mm256_set1_epi32( ptr[1] );
-    const auto z1    = _mm256_shuffle_epi8(y1, mask1);
-    const auto z2    = _mm256_shuffle_epi8(y2, mask1);
-    const auto u1    = _mm256_and_si256   (z1, mask2);
-    const auto u2    = _mm256_and_si256   (z2, mask2);
-    const auto v1    = _mm256_cmpeq_epi8  (u1, _mm256_setzero_si256());    // LES -1 => Les FF correspondent au 1
-    const auto v2    = _mm256_cmpeq_epi8  (u2, _mm256_setzero_si256());    // LES -1 => Les FF correspondent au 1
-    const auto w1    = _mm256_andnot_si256(v1, c1);    // INVERSION DU MASQUE
-    const auto w2    = _mm256_andnot_si256(v2, c2);    // INVERSION DU MASQUE
-    const auto p     = _mm256_or_si256    (w1, w2);
-    return p;   // ON RESSORT LA VALEUR -1 => +1
-#else
-    const auto zero  = _mm256_setzero_si256( );
-    const auto w1    = _mm256_mask_mov_epi8( zero, ptr[0], c1 );
-    const auto w2    = _mm256_mask_mov_epi8( zero, ptr[1], c2 );
-    const auto p     = _mm256_or_si256    (w1, w2);
-    return p;   // ON RESSORT LA VALEUR -1 => +1
-#endif
-
-}
 
 void bit_unpack_avx2(
         uint8_t* dst,
         const uint8_t* src,
         const int32_t length)
 {
+    if( length%8 != 0 )
+    {
+        printf("(EE) The array length that have (length%%8 != 0) are not currently managed !");
+        exit( EXIT_FAILURE );
+    }
+
+    const int32_t rounds = (length / sizeof(__m256i));
+    const int32_t middle = sizeof(__m256i) * rounds;
+
+    const uint32_t* ptr_i = (const uint32_t*)src;
+    __m256i*  ptr_o = (__m256i*)dst;
+
+    const auto mask2 = _mm256_loadu_si256( (__m256i*)mask2a    );
+    const auto mask1 = _mm256_loadu_si256( (__m256i*)mask1a    );
+    const auto ones  = _mm256_loadu_si256( (__m256i*)one_array );
+    const auto zeros = _mm256_setzero_si256();
+
+#pragma loop unroll
+    for(int32_t i = 0; i < rounds; i += 1)
+    {
+        const uint32_t a = ptr_i[i];
+        const auto y = _mm256_set1_epi32  (a       );
+        const auto z = _mm256_shuffle_epi8(y, mask1);
+        const auto u = _mm256_and_si256   (z, mask2);
+        const auto v = _mm256_cmpeq_epi8  (u, zeros);
+        const auto b = _mm256_andnot_si256(v, ones );
+        _mm256_storeu_si256(ptr_o + i, b);
+    }
+
+    //
+    // Le patch scalaire qui termine les calculs si on n'a pas tout fait
+    // en vectoriel
+    //
+    for(int32_t i = middle; i < length; i += 8)
+    {
+        const uint32_t v = src[i/8];
+#pragma clang loop unroll(full)
+        for( uint32_t q = 0; q < 8 ; q += 1 )
+        {
+            dst[i+q] = (v >> q) & 0x01;
+        }
+    }
 
 }
 
