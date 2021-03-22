@@ -25,19 +25,15 @@
 
 #ifndef _bit_pack_neon_
 #define _bit_pack_neon_
+#ifdef __ARM_NEON__
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-
-#ifdef __ARM_NEON__
-    #include <arm_neon.h>
-#else
-    #define NEON2SSE_DISABLE_PERFORMANCE_WARNING
-    #include "NEON_2_SSE.h"
-#endif
+#include <arm_neon.h>
 
 extern void bit_pack_neon(uint8_t* dst, const uint8_t* src, const int32_t length);
 
+#endif
 #endif
 

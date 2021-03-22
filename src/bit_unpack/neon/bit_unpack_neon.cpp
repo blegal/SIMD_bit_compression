@@ -23,7 +23,7 @@
 *
 */
 
-#ifdef __SSE4_2__
+#ifdef __ARM_NEON__
 
 #include "bit_unpack_neon.hpp"
 

@@ -25,14 +25,14 @@
 
 #ifndef _bit_unpack_neon_
 #define _bit_unpack_neon_
-#ifdef __SSE4_2__
+#ifdef __ARM_NEON__
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <immintrin.h>
+#include <arm_neon.h>
 
 extern void bit_unpack_neon(uint8_t* dst, const uint8_t* src, const int32_t length);
 
-#endif //__SSE4_2__
+#endif
 #endif
