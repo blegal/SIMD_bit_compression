@@ -69,7 +69,7 @@ void bit_pack_neon(uint8_t* dst, const uint8_t* src, const int32_t length)
 #pragma loop unroll
     for(int32_t i = 0; i < rounds; i += 1)
     {
-        const uint8x16_t  v = vld1q_s32(ptr_i + i);
+        const uint8x16_t  v = vld1q_u32((const uint32_t*)(ptr_i + i));
         const uint8x16_t  w = vceqq_s8 (v, c_one);
         const uint32_t    x = vmovmaskq_u8(w);
         ptr_o[i]            = x;
