@@ -37,3 +37,4 @@ bin/*
 cmake-build-debug/*
 .idea/*
 build/*
+src/bit_unpack/.DS_Store
